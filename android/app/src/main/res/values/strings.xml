@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Phuoc dai ca</string>
+    <string name="title_activity_main">Phuoc dai ca</string>
+    <string name="package_name">com.phuoc.plc</string>
+    <string name="custom_url_scheme">com.phuoc.plc</string>
+</resources>

@@ -1,0 +1,11 @@
+{
+  "appId": "com.phuoc.plc",
+  "appName": "Phuoc dai ca",
+  "webDir": "out",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}
