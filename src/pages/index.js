@@ -3,6 +3,7 @@ import { useState } from "react";
 import { POMReader } from "../components/POMReader";
 import { useAtom } from "jotai";
 import { urlAtom } from "@/lib/atoms";
+import Layout from "@/layouts/SignedIn";
 
 const options = [
   {
@@ -52,7 +53,7 @@ const options = [
   },
 ]
 
-export default function Home() {
+const Home = () => {
   const [selectedDevice, setSelectedDevice] = useState(options[0])
   const [url, setUrl] = useAtom(urlAtom)
   const [key, setKey] = useState(0)
@@ -97,3 +98,6 @@ export default function Home() {
     </div>
   )
 }
+
+Home.Layout = Layout;
+export default Home;
