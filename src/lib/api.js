@@ -24,7 +24,7 @@ export const getData = async (url, params, isAndroid, cb) => {
     }
 }
 
-export const reader = async (url, params, isAndroid, cb) => {
+export const reader = async (url, params, willSave, isAndroid, cb) => {
     if (isAndroid) {
         const { data } = await axios.get(`${url}/api`, {
             params: {
@@ -34,7 +34,7 @@ export const reader = async (url, params, isAndroid, cb) => {
         cb(data);
         return data
     } else {
-        const { data } = await axios.get(`http://localhost:3000/api/reader?addr=${JSON.stringify({ ...params })}&url=${url}`)
+        const { data } = await axios.get(`http://localhost:3000/api/reader?addr=${JSON.stringify({ ...params })}&url=${url}&noSaving=${!willSave}`)
         cb(data)
         return data
     }

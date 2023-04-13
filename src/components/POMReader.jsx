@@ -195,6 +195,7 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
       const readerData = await reader(
         url,
         addresses,
+        true,
         isMobile,
         function (readerData) {
           console.log(data);
