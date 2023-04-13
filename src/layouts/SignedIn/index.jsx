@@ -20,18 +20,23 @@ import {
   
   const routes = [
     {
+      name: "Home",
+      href: "/tool/status",
+      icon: FiMonitor,
+    },
+    {
       name: "Monitor",
-      href: "/",
+      href: "/tool/monitor",
       icon: FiMonitor,
     },
     {
       name: "Statistics",
-      href: "/statistics",
+      href: "/tool/statistics",
       icon: MdListAlt,
     },
     {
       name: "Report",
-      href: "/report",
+      href: "/tool/report",
       icon: MdListAlt,
     },
   ];

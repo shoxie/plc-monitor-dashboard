@@ -1,4 +1,4 @@
-import DataTable from "../../components/Table";
+import DataTable from "@/components/Table";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -6,6 +6,7 @@ import moment from "moment";
 import { Box, Text } from "@chakra-ui/react";
 import { getData } from '@/lib/api';
 import { Capacitor } from "@capacitor/core";
+import Layout from "@/layouts/SignedIn";
 
 const columnHelper = createColumnHelper();
 
@@ -53,7 +54,7 @@ const columns = [
 ];
 
 
-export default function Statistics({ url }) {
+const Statistics = ({ url }) => {
   const [data, setData] = useState([])
   const [dataStatus, setDataStatus] = useState("loading")
   const [sortCondition, setSortCondition] = useState({
@@ -108,3 +109,6 @@ export default function Statistics({ url }) {
     </Box>
   )
 }
+
+Statistics.Layout = Layout;
+export default Statistics

@@ -1,5 +1,6 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
+import Layout from "@/layouts/SignedIn";
 
 const { Box, FormControl, Input, FormLabel, Heading, SimpleGrid, Switch, Button } = require("@chakra-ui/react")
 
@@ -47,5 +48,5 @@ const Report = () => {
         </Box>
     )
 }
-
+Report.Layout = Layout;
 export default Report
