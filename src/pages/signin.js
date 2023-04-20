@@ -10,7 +10,7 @@ export default function SignIn() {
     const [user, setUser] = useAtom(userAtom)
     const router = useRouter()
     const noti = useNoti()
-
+    
     async function onSubmit(ev) {
         ev.preventDefault();
         const username = ev.currentTarget.email.value;
@@ -24,18 +24,17 @@ export default function SignIn() {
 
         await axios.post('/api/signin', { username, password }).then(res => {
             const data = res.data
-            setUser(data)
             setUser({ ...data })
 
             cookies.set('user', JSON.stringify(data), { expires: 1 })
 
-            noti.addNoti("Đăng nhập thành công", "Đăng nhập thành công", "success", "Đóng", () => { router.push('/') })
+            noti.addNoti("Đăng nhập thành công", "Đăng nhập thành công", "success", "Đóng", () => { router.push('/tool/status') })
+
+            router.push('/tool/status')
         }).catch(err => {
             console.log(err)
             noti.addNoti("Đăng nhập lỗi", "Tài khoản hoặc mật khẩu không đúng", "error", "Đóng", () => { })
         })
-
-
     }
 
 

@@ -1,29 +1,29 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import Layout from "@/layouts/SignedIn";
+import MyMonthlyCalendar, {Calendar} from "@/components/Calendar";
+import { isSameDay } from 'date-fns'
 
 const { Box, FormControl, Input, FormLabel, Heading, SimpleGrid, Switch, Button } = require("@chakra-ui/react")
 
 const Report = () => {
     const [input, setInput] = useState({})
     const [isMailing, setIsMailing] = useState(false)
+    const [report, setReport] = useState([])
 
     const handleInputChange = (e, target) => setInput({ ...input, [target]: e.target.value })
 
     useEffect(() => {
-        console.log(input)
-    }, [input])
+        async function generateReport() {
+            const { data } = await axios.get(`/api/getReport`)  
+    
+            setReport(data)
+        }
 
-    async function generateReport() {
-        const data = await axios.get(`http://localhost:3000/api/getData?where=${JSON.stringify({
-            time: {
-                gte: new Date(input.from).getTime(),
-                lte: new Date(input.to).getTime()
-            }
-        })}`)  
+        generateReport()
+    }, [])
 
-        console.log(data)
-    }
+    
 
     return (
         <Box>
@@ -44,7 +44,11 @@ const Report = () => {
                 </FormLabel>
                 <Switch checked={isMailing} onChange={e => setIsMailing(e.target.checked)} id='email-alerts' />
             </FormControl>
-            <Button colorScheme='blue' onClick={generateReport}>Create</Button>
+            {/* <Button colorScheme='blue' onClick={generateReport}>Create</Button> */}
+            <Box mt={10}>
+                <MyMonthlyCalendar />
+                <Calendar events={report} />
+            </Box>
         </Box>
     )
 }

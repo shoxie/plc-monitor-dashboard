@@ -9,12 +9,26 @@ const Status = () => {
         onlineDevices: 0,
         power: 0
     })
-    
+    const [isError, setIsError] = useState(false)
+
     useEffect(() => {
         async function run() {
-            setStatus(await getStatuses())
+            try {
+                setStatus(await getStatuses())
+            } catch(err) {
+                setIsError(true)
+            }
         }
-        run()
+        setInterval(() => {
+            if (!isError) run()
+        }, 3000)
+
+        return () => {
+            clearInterval(run)
+        }
+
+        // run()
+
     }, [])
 
     return (
@@ -46,7 +60,7 @@ const Status = () => {
                 </VStack>
                 <VStack justify="center">
                     <VStack bg="gray.200" py={8} px={16} w="full">
-                        <Text textTransform={"uppercase"} fontWeight={"600"} fontSize="3xl">Truy cập</Text>
+                        <Text textTransform={"uppercase"} fontWeight={"600"} fontSize="3xl">Lỏ chìa</Text>
                         <Box bg={"orange"} p={4}>
                             <Text textTransform={"uppercase"} px={5}>{status.onlineDevices}</Text>
                         </Box>

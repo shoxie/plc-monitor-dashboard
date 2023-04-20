@@ -28,6 +28,9 @@ dependencies:
   '@tanstack/react-table':
     specifier: ^8.7.9
     version: 8.7.9(react-dom@18.2.0)(react@18.2.0)
+  '@zach.codes/react-calendar':
+    specifier: ^0.3.1
+    version: 0.3.1(date-fns@2.29.3)(react@18.2.0)
   axios:
     specifier: ^1.3.4
     version: 1.3.4
@@ -37,6 +40,9 @@ dependencies:
   cors:
     specifier: ^2.8.5
     version: 2.8.5
+  date-fns:
+    specifier: ^2.29.3
+    version: 2.29.3
   framer-motion:
     specifier: ^6.5.1
     version: 6.5.1(react-dom@18.2.0)(react@18.2.0)
@@ -49,6 +55,9 @@ dependencies:
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
+  mac-scrollbar:
+    specifier: ^0.10.6
+    version: 0.10.6
   moment:
     specifier: ^2.29.4
     version: 2.29.4
@@ -76,6 +85,9 @@ dependencies:
   react-icons:
     specifier: ^4.8.0
     version: 4.8.0(react@18.2.0)
+  react-nice-avatar:
+    specifier: ^1.4.0
+    version: 1.4.0(react@18.2.0)
   react-table:
     specifier: ^7.8.0
     version: 7.8.0(react@18.2.0)
@@ -1535,6 +1547,18 @@ packages:
     resolution: {integrity: sha512-t/Tvs5qR47OLOr+4E9ckN8AmP2Tf16gWq+/qA4iUGS/OOyHVO8wv2vjJuX8SNOUTJyWb+2t7wJm6cXILFnOROA==}
     dev: false
 
+  /@zach.codes/react-calendar@0.3.1(date-fns@2.29.3)(react@18.2.0):
+    resolution: {integrity: sha512-j6UFVYWwly1vqHX61tMiSjC/YFLpvQZzgn6aHt+jJdfRTq4FbW82XS+4CcuCtmbwOe6oga9wNj26E2LH1F+ERg==}
+    engines: {node: '>=10'}
+    requiresBuild: true
+    peerDependencies:
+      date-fns: '>=2'
+      react: '>=16'
+    dependencies:
+      date-fns: 2.29.3
+      react: 18.2.0
+    dev: false
+
   /ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
     engines: {node: '>=8'}
@@ -1661,6 +1685,10 @@ packages:
     resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
     engines: {node: '>=10'}
     dev: true
+
+  /chroma-js@2.4.2:
+    resolution: {integrity: sha512-U9eDw6+wt7V8z5NncY2jJfZa+hUH8XEj8FQHgFJTrUFnJfXYf4Ml4adI2vXZOjqRDpFWtYVWypDfZwnJ+HIR4A==}
+    dev: false
 
   /client-only@0.0.1:
     resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
@@ -1860,6 +1888,11 @@ packages:
       d3-interpolate: 3.0.1
       d3-selection: 3.0.0
       d3-timer: 2.0.0
+    dev: false
+
+  /date-fns@2.29.3:
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
+    engines: {node: '>=0.11'}
     dev: false
 
   /debug@4.3.4:
@@ -2193,6 +2226,10 @@ packages:
     dependencies:
       yallist: 4.0.0
     dev: true
+
+  /mac-scrollbar@0.10.6:
+    resolution: {integrity: sha512-aNmVDGeYRDmT3mXVubOSCosVkuNCGDTafPuQD4+AGG+KZ6imvr9IcRjQIsHdYFgXmearNsaEKt6efT4+5YBSqg==}
+    dev: false
 
   /memoize-one@6.0.0:
     resolution: {integrity: sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw==}
@@ -2548,6 +2585,17 @@ packages:
       lottie-web: 5.10.2
       react: 18.2.0
     dev: true
+
+  /react-nice-avatar@1.4.0(react@18.2.0):
+    resolution: {integrity: sha512-fXcFIGFhkPeQul7WtRM0AV3m0Ed46Nj6dIE9rCL28vtcb6t965JD4rUc0oJHM6gUTwNJixQ1IidAVqZCVYyEaA==}
+    peerDependencies:
+      react: '>=16.0.0'
+    dependencies:
+      '@babel/runtime': 7.21.0
+      chroma-js: 2.4.2
+      prop-types: 15.8.1
+      react: 18.2.0
+    dev: false
 
   /react-remove-scroll-bar@2.3.4(react@18.2.0):
     resolution: {integrity: sha512-63C4YQBUt0m6ALadE9XV56hV8BgJWDmmTPY758iIJjfQKt2nYwoUrPk0LXRXcB/yIj82T1/Ixfdpdk68LwIB0A==}

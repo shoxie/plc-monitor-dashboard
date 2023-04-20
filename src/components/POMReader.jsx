@@ -17,7 +17,9 @@ import {
   Grid,
   GridItem,
   HStack,
+  Input,
   SimpleGrid,
+  Text,
 } from "@chakra-ui/react";
 import axios from "axios";
 import moment from "moment";
@@ -25,6 +27,7 @@ import Loading from "./Loading";
 import { CapacitorHttp } from "@capacitor/core";
 import { getData, reader } from "@/lib/api";
 import useDeviceDetect from "./../lib/useDevicDetect";
+import { getServerConfig } from "@/lib/utils";
 
 ChartJS.register(
   CategoryScale,
@@ -84,6 +87,7 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
     prevState: false,
     currentState: true,
   });
+  const [config, setConfig] = React.useState(null);
   const [chartOptions, setChartOptions] = React.useState({
     responsive: true,
     plugins: {
@@ -96,6 +100,12 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
       },
     },
   });
+  const [currentStat, setCurrentStat] = React.useState({
+    ampere: 0,
+    voltage: 0,
+    frequency: 0,
+    power: 0,
+  })
   const voltageChartRef = React.useRef(null);
   const freqChartRef = React.useRef(null);
   const ampereChartRef = React.useRef(null);
@@ -107,9 +117,14 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
 
   useEffect(() => {
     const interval = setInterval(async () => {
+      if (!config) {
+        const serverConfig = await getServerConfig()
+        setConfig(serverConfig)
+        return
+      }
       if (!freqData || !voltageData || !ampereData || !powerData) {
         await getData(
-          url,
+          config.url,
           {
             where: {
               device: addresses.device,
@@ -183,6 +198,13 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
                 },
               ],
             });
+
+            setCurrentStat({
+              ampere: ampere[ampere.length - 1],
+              voltage: voltage[voltage.length - 1],
+              frequency: frequency[frequency.length - 1],
+              power: power[power.length - 1],
+            })
           }
         );
       }
@@ -193,7 +215,7 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
       if (!powerChartRef.current || !powerChartRef.current.config) return;
 
       const readerData = await reader(
-        url,
+        config.url,
         addresses,
         true,
         isMobile,
@@ -202,8 +224,6 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
         }
       );
       const values = readerData.values;
-
-      console.log(!ampereChartRef.current)
 
       setControlStates({
         currentState: readerData.state,
@@ -240,6 +260,14 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
       freqChartRef.current.config.data.labels = labels;
       powerChartRef.current.config.data.labels = labels;
 
+      // set current stat for last data of chart
+      setCurrentStat({
+        ampere: ampere[ampere.length - 1],
+        voltage: voltage[voltage.length - 1],
+        frequency: freq[freq.length - 1],
+        power: power[power.length - 1],
+      })
+
       ampereChartRef.current.update();
       freqChartRef.current.update();
       voltageChartRef.current.update();
@@ -265,7 +293,7 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
         powerChartRef.current = null;
       }
     };
-  }, [freqData]);
+  }, [freqData, config]);
 
   if (!freqData || !voltageData || !ampereData) {
     return <Loading />;
@@ -274,6 +302,20 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
   return (
     <Box>
       <>
+      <SimpleGrid columns={2} spacing={10}>
+        <Box bg={"gray.200"} rounded={"md"} p={3}>
+          <Text>{`Công suất: ${currentStat.power}`}</Text>
+        </Box>
+        <Box bg={"gray.200"} rounded={"md"} p={3}>
+          <Text>{`Điện áp: ${currentStat.voltage}`}</Text>
+        </Box>
+        <Box bg={"gray.200"} rounded={"md"} p={3}>
+          <Text>{`Dòng điện: ${currentStat.ampere}`}</Text>
+        </Box>
+        <Box bg={"gray.200"} rounded={"md"} p={3}>
+          <Text>{`PF: ${currentStat.frequency}`}</Text>
+        </Box>
+      </SimpleGrid>
         <Grid
           templateColumns={{
             base: "repeat(1, 1fr)",

@@ -16,8 +16,12 @@ export const isAndroid = (navigator) => {
   return /Android/i.test(navigator.userAgent) ? "127.0.0.1" : "localhost";
 };
 
+export const getServerConfig = async () => {
+  return await axios.get("/api/getServerConfig").then(res => res.data)
+}
+
 export const getStatuses = async () => {
-  const serverConfig = await axios.get("/api/getServerConfig").then(res => res.data)
+  const serverConfig = await getServerConfig()
   // const isOnline = await axios.get(serverConfig.url).then(res => {
   //   return true
   // }).catch(err => {
@@ -41,7 +45,7 @@ export const getStatuses = async () => {
 
   return {
     isOnline: readerData.values ? true : false,
-    onlineDevices: 0,
+    onlineDevices: Math.round(readerData.values.power1 + readerData.values.power2) > 0 ? 5 : 0,
     power: Math.round(readerData.values.power1 + readerData.values.power2),
   }
 }

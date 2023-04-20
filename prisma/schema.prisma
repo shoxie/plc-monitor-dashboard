@@ -32,3 +32,10 @@ model ServerConfig {
   url        String
   created_at DateTime @default(now())
 }
+
+model Report {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  power1     Float
+  power2     Float
+  created_at DateTime @default(now())
+}

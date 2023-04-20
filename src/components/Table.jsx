@@ -124,7 +124,7 @@ export default function DataTable({
         </Box>
       </Box>
       <Box>
-        <Table>
+        <Table w={"full"}>
           <Thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <Tr key={headerGroup.id}>
