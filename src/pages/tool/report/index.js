@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import Layout from "@/layouts/SignedIn";
-import MyMonthlyCalendar, {Calendar} from "@/components/Calendar";
+import  Calendar from "@/components/Calendar";
 import { isSameDay } from 'date-fns'
 
 const { Box, FormControl, Input, FormLabel, Heading, SimpleGrid, Switch, Button } = require("@chakra-ui/react")
@@ -15,15 +15,15 @@ const Report = () => {
 
     useEffect(() => {
         async function generateReport() {
-            const { data } = await axios.get(`/api/getReport`)  
-    
+            const { data } = await axios.get(`/api/getReport`)
+
             setReport(data)
         }
 
         generateReport()
     }, [])
 
-    
+
 
     return (
         <Box>
@@ -46,7 +46,7 @@ const Report = () => {
             </FormControl>
             {/* <Button colorScheme='blue' onClick={generateReport}>Create</Button> */}
             <Box mt={10}>
-                <MyMonthlyCalendar />
+              
                 <Calendar events={report} />
             </Box>
         </Box>

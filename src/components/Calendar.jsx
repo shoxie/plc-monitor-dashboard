@@ -12,7 +12,8 @@ import {
   subMonths,
   parse,
   getDay,
-  parseISO
+  parseISO,
+  getMonth,
 } from "date-fns";
 import { Box, HStack, Text, Icon, VStack, Flex } from "@chakra-ui/react";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
@@ -30,9 +31,21 @@ function CalendarHeader({ currentMonth, setCurrentMonth }) {
 
   return (
     <HStack justify="space-between">
-      <Icon as={HiChevronLeft} onClick={prevMonth} boxSize={"12"} cursor="pointer" />
-      <Text fontWeight="600" fontSize="xl">{format(currentMonth, dateFormat)}</Text>
-      <Icon as={HiChevronRight} onClick={nextMonth} boxSize={"12"} cursor="pointer" />
+      <Icon
+        as={HiChevronLeft}
+        onClick={prevMonth}
+        boxSize={"12"}
+        cursor="pointer"
+      />
+      <Text fontWeight="600" fontSize="xl">
+        {format(currentMonth, dateFormat)}
+      </Text>
+      <Icon
+        as={HiChevronRight}
+        onClick={nextMonth}
+        boxSize={"12"}
+        cursor="pointer"
+      />
     </HStack>
   );
 }
@@ -61,7 +74,9 @@ function CalendarDays({ currentMonth }) {
           align={"center"}
           key={idx}
         >
-          <Text align="center" fontWeight="600">{content}</Text>
+          <Text align="center" fontWeight="600">
+            {content}
+          </Text>
         </Flex>
       ))}
     </HStack>
@@ -74,8 +89,12 @@ function CalendarCells({ currentMonth, selectedDate, events }) {
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
   const endDate = endOfWeek(monthEnd);
-
   const dateFormat = "d";
+
+  // events.map((item) => {
+  //   if (isSameDay(new Date(item.date), currentMonth))
+  //     console.log(new Date(item.date).getDate(), new Date(currentMonth).getDate());
+  // });
 
   useEffect(() => {
     const rows = [];
@@ -86,14 +105,52 @@ function CalendarCells({ currentMonth, selectedDate, events }) {
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat);
-        days.push(formattedDate);
+        let additional = format(day, "yyyy-mm-d");
+        const a = events.find((item) => {
+          if (
+            new Date(item.date).getDate() === new Date(day).getDate()
+          ) {
+            return item.data;
+          } else {
+            return null
+          }
+        });
+        console.log(a, day);
+        if (a) {
+          const powerSum = a.data.reduce((acc, curr) => {
+            const totalPower = curr.power1 + curr.power2;
+            return acc + totalPower;
+          }, 0);
+          const hours = a.data.map((obj) => {
+            const hour = new Date(obj.created_at).getUTCHours();
+            return hour;
+          });
+          
+          // Calculate the number of unique hours recorded in the array
+          const uniqueHours = new Set(hours);
+          const recordedHours = uniqueHours.size;
+          days.push({
+            date: formattedDate,
+            data: a.data,
+            powerSum: powerSum,
+            hours: recordedHours
+          });
+        } else {
+          days.push({
+            date: formattedDate,
+            data: [],
+            powerSum: 0,
+            recordedHours: 0
+          });
+        }
         day = addDays(day, 1);
       }
+
       rows.push(days);
       days = [];
     }
     setDays(rows);
-  }, [currentMonth]);
+  }, [currentMonth, events]);
 
   return (
     <Box>
@@ -108,14 +165,17 @@ function CalendarCells({ currentMonth, selectedDate, events }) {
                 height: "6rem",
                 width: "calc(100%/7)",
                 flexBasis: "calc(100%/7)",
-                marginLeft: 0
+                marginLeft: 0,
               }}
               position="relative"
-              border={'1px'}
+              border={"1px"}
               maxW={"full"}
               key={day}
             >
-              <Text align="center" position="absolute" bottom={0} right={0}>{day}</Text>
+              <Text>{Math.round(day.powerSum / day.data.length * day.hours ) || 0} KWh</Text>
+              <Text align="center" position="absolute" bottom={0} right={0}>
+                {day.date}
+              </Text>
             </Flex>
           ))}
         </HStack>
@@ -124,36 +184,31 @@ function CalendarCells({ currentMonth, selectedDate, events }) {
   );
 }
 
-export const Calendar = ({ events = [] }) => {
+const Calendar = ({ events = [] }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [eventData, setEvents] = useState([])
+  const [eventData, setEvents] = useState([]);
 
   useEffect(() => {
-    if (events.length === 0) return
-    const result = []
-    let date = events === [] ? 0 : parseISO(events[0]?.created_at).getDate()
-
-    let temp = []
+    if (events.length === 0) return;
     const groups = events.reduce((groups, game) => {
-      const date = game.created_at.split('T')[0];
+      const date = game.created_at.split("T")[0];
       if (!groups[date]) {
         groups[date] = [];
       }
       groups[date].push(game);
       return groups;
     }, {});
-    
-    // Edit: to add it in the array format instead
+
     const groupArrays = Object.keys(groups).map((date) => {
       return {
         date,
-        data: groups[date]
+        data: groups[date],
       };
     });
 
-    setEvents(groupArrays)
-  }, [events])
+    setEvents(groupArrays);
+  }, [events]);
 
   return (
     <Box>
@@ -162,127 +217,13 @@ export const Calendar = ({ events = [] }) => {
         setCurrentMonth={setCurrentMonth}
       />
       <CalendarDays currentMonth={currentMonth} />
-      <CalendarCells currentMonth={currentMonth} selectedDate={selectedDate} events={eventData} />
+      <CalendarCells
+        currentMonth={currentMonth}
+        selectedDate={selectedDate}
+        events={eventData}
+      />
     </Box>
   );
 };
 
-class CustomCalendar extends React.Component {
-  state = {
-    currentMonth: new Date(),
-    selectedDate: new Date(),
-  };
-
-  renderHeader() {
-    const dateFormat = "MMMM yyyy";
-
-    return (
-      <div className="header row flex-middle">
-        <div className="col col-start">
-          <div className="icon" onClick={this.prevMonth}>
-            chevron_left
-          </div>
-        </div>
-        <div className="col col-center">
-          <span>{format(this.state.currentMonth, dateFormat)}</span>
-        </div>
-        <div className="col col-end" onClick={this.nextMonth}>
-          <div className="icon">chevron_right</div>
-        </div>
-      </div>
-    );
-  }
-
-  renderDays() {
-    const dateFormat = "dddd";
-    const days = [];
-
-    let startDate = startOfWeek(this.state.currentMonth);
-
-    for (let i = 0; i < 7; i++) {
-      days.push(
-        <div className="col col-center" key={i}>
-          {format(addDays(startDate, i), dateFormat)}
-        </div>
-      );
-    }
-
-    return <div className="days row">{days}</div>;
-  }
-
-  renderCells() {
-    const { currentMonth, selectedDate } = this.state;
-    const monthStart = startOfMonth(currentMonth);
-    const monthEnd = endOfMonth(monthStart);
-    const startDate = startOfWeek(monthStart);
-    const endDate = endOfWeek(monthEnd);
-
-    const dateFormat = "d";
-    const rows = [];
-
-    let days = [];
-    let day = startDate;
-    let formattedDate = "";
-
-    while (day <= endDate) {
-      for (let i = 0; i < 7; i++) {
-        formattedDate = format(day, dateFormat);
-        const cloneDay = day;
-        days.push(
-          <div
-            className={`col cell ${
-              !isSameMonth(day, monthStart)
-                ? "disabled"
-                : isSameDay(day, selectedDate)
-                ? "selected"
-                : ""
-            }`}
-            key={day}
-            onClick={() => this.onDateClick(dateFns.parse(cloneDay))}
-          >
-            <span className="number">{formattedDate}</span>
-            <span className="bg">{formattedDate}</span>
-          </div>
-        );
-        day = addDays(day, 1);
-      }
-      rows.push(
-        <div className="row" key={day}>
-          {days}
-        </div>
-      );
-      days = [];
-    }
-    return <div className="body">{rows}</div>;
-  }
-
-  onDateClick = (day) => {
-    this.setState({
-      selectedDate: day,
-    });
-  };
-
-  nextMonth = () => {
-    this.setState({
-      currentMonth: addMonths(this.state.currentMonth, 1),
-    });
-  };
-
-  prevMonth = () => {
-    this.setState({
-      currentMonth: subMonths(this.state.currentMonth, 1),
-    });
-  };
-
-  render() {
-    return (
-      <div className="calendar">
-        {this.renderHeader()}
-        {this.renderDays()}
-        {this.renderCells()}
-      </div>
-    );
-  }
-}
-
-export default CustomCalendar;
+export default Calendar;
