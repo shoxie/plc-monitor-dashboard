@@ -15,8 +15,62 @@ import {
   parseISO,
   getMonth,
 } from "date-fns";
-import { Box, HStack, Text, Icon, VStack, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  Text,
+  Icon,
+  VStack,
+  Flex,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+} from "@chakra-ui/react";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+import { Bar } from "react-chartjs-2";
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+import { faker } from "@faker-js/faker";
+
+const labels = ["January", "February", "March", "April", "May", "June", "July"];
+
+export const data = {
+  labels,
+  datasets: [
+    {
+      label: "Dataset 1",
+      data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+      backgroundColor: "rgba(255, 99, 132, 0.5)",
+    },
+    {
+      label: "Dataset 2",
+      data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+      backgroundColor: "rgba(53, 162, 235, 0.5)",
+    },
+  ],
+};
 
 function CalendarHeader({ currentMonth, setCurrentMonth }) {
   const dateFormat = "MMMM yyyy";
@@ -83,6 +137,127 @@ function CalendarDays({ currentMonth }) {
   );
 }
 
+function PerDayModal({ day }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [chartData, setChartData] = useState(null)
+  const [options, setOptions] = useState(null)
+
+  useEffect(() => {
+    function fillMissingHours(hourlySum) {
+      const filledHourlySum = [];
+      for (let hour = 0; hour < 24; hour++) {
+        const existingHourlySum = hourlySum.find((x) => x.hour === hour);
+        if (existingHourlySum) {
+          filledHourlySum.push(existingHourlySum);
+        } else {
+          filledHourlySum.push({
+            hour,
+            power: 0
+          });
+        }
+      }
+      return filledHourlySum;
+    }
+
+    function transformToChartJSFormat(data) {
+      const labels = data.map((item) => item.hour.toString());
+      const powers = data.map((item) => item.power);
+    
+      return {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Power',
+            data: powers,
+            backgroundColor: 'rgba(0, 123, 255, 0.5)', // Set your desired background color
+            borderColor: 'rgba(0, 123, 255, 1)', // Set your desired border color
+            borderWidth: 1
+          }
+        ]
+      };
+    }
+
+    const hourlySum = [];
+    day.data.forEach((obj) => {
+      const createdDate = new Date(obj.created_at);
+      const hour = createdDate.getHours();
+
+      const existingHourlySum = hourlySum.find((x) => x.hour === hour);
+
+      if (existingHourlySum) {
+        existingHourlySum.power += obj.power1 + obj.power2;
+      } else {
+        if (obj.power1 === 0 && obj.power2 === 0) {
+          hourlySum.push({
+            hour,
+            power: 0,
+          });
+        } else {
+          hourlySum.push({
+            hour,
+            power: obj.power1 + obj.power2,
+          });
+        }
+      }
+    });
+    const data = fillMissingHours(hourlySum);
+    const chart = transformToChartJSFormat(data);
+    setChartData(chart)
+
+    setOptions({
+      responsive: true,
+      plugins: {
+        legend: {
+          position: "top",
+        },
+        title: {
+          display: true,
+          text: day.selectedDate,
+        },
+      },
+    })
+
+  }, [day]);
+  return (
+    <>
+      <Button onClick={onOpen} w="full" h="full" position="relative">
+        <Text>
+          {Math.round((day.powerSum / day.data.length) * day.hours) || 0} KWh
+        </Text>
+        <Text align="center" position="absolute" bottom={0} right={0}>
+          {day.date}
+        </Text>
+        {new Date().getDate().toString() === day.date && (
+          <Box position="absolute" left={3} top={0} w="2" h="full" bg="cyan.400" />
+        )}
+      </Button>
+      <Box position={"fixed"} top={0} left={0}>
+        <Modal isOpen={isOpen} onClose={onClose} size="5xl">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>{options.plugins.title.text ?? "Modal Title"}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              {
+                chartData && options && (
+                  <Bar options={options} data={chartData} />
+                )
+              }
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={onClose}>
+                Close
+              </Button>
+              <Button variant="ghost">Secondary Action</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Box>
+    </>
+  );
+}
+
 function CalendarCells({ currentMonth, selectedDate, events }) {
   const [days, setDays] = useState([]);
   const monthStart = startOfMonth(currentMonth);
@@ -105,17 +280,13 @@ function CalendarCells({ currentMonth, selectedDate, events }) {
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat);
-        let additional = format(day, "yyyy-mm-d");
         const a = events.find((item) => {
-          if (
-            new Date(item.date).getDate() === new Date(day).getDate()
-          ) {
+          if (new Date(item.date).getDate() === new Date(day).getDate()) {
             return item.data;
           } else {
-            return null
+            return null;
           }
         });
-        console.log(a, day);
         if (a) {
           const powerSum = a.data.reduce((acc, curr) => {
             const totalPower = curr.power1 + curr.power2;
@@ -125,7 +296,7 @@ function CalendarCells({ currentMonth, selectedDate, events }) {
             const hour = new Date(obj.created_at).getUTCHours();
             return hour;
           });
-          
+
           // Calculate the number of unique hours recorded in the array
           const uniqueHours = new Set(hours);
           const recordedHours = uniqueHours.size;
@@ -133,14 +304,16 @@ function CalendarCells({ currentMonth, selectedDate, events }) {
             date: formattedDate,
             data: a.data,
             powerSum: powerSum,
-            hours: recordedHours
+            hours: recordedHours,
+            selectedDate: format(selectedDate, "dd/MM/yyyy")
           });
         } else {
           days.push({
             date: formattedDate,
             data: [],
             powerSum: 0,
-            recordedHours: 0
+            recordedHours: 0,
+            selectedDate: format(selectedDate, "dd/MM/yyyy")
           });
         }
         day = addDays(day, 1);
@@ -170,12 +343,9 @@ function CalendarCells({ currentMonth, selectedDate, events }) {
               position="relative"
               border={"1px"}
               maxW={"full"}
-              key={day}
+              key={day.date}
             >
-              <Text>{Math.round(day.powerSum / day.data.length * day.hours ) || 0} KWh</Text>
-              <Text align="center" position="absolute" bottom={0} right={0}>
-                {day.date}
-              </Text>
+              <PerDayModal day={day} />
             </Flex>
           ))}
         </HStack>

@@ -27,7 +27,7 @@ const Report = () => {
 
     return (
         <Box>
-            <Heading>Monthly Report</Heading>
+            {/* <Heading>Monthly Report</Heading>
             <SimpleGrid columns={2} spacing={5}>
                 <FormControl>
                     <FormLabel>From</FormLabel>
@@ -43,10 +43,9 @@ const Report = () => {
                     Enable email alerts?
                 </FormLabel>
                 <Switch checked={isMailing} onChange={e => setIsMailing(e.target.checked)} id='email-alerts' />
-            </FormControl>
+            </FormControl> */}
             {/* <Button colorScheme='blue' onClick={generateReport}>Create</Button> */}
             <Box mt={10}>
-              
                 <Calendar events={report} />
             </Box>
         </Box>
