@@ -235,7 +235,7 @@ function PerDayModal({ day }) {
         <Modal isOpen={isOpen} onClose={onClose} size="5xl">
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>{options.plugins.title.text ?? "Modal Title"}</ModalHeader>
+            <ModalHeader>{options?.plugins?.title?.text ?? "Modal Title"}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               {
