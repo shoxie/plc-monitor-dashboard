@@ -84,6 +84,7 @@ const SidebarItem = ({ item }) => {
 
 const Sidebar = forwardRef((props, ref) => {
   const [selectedDevice, setSelectedDevice] = useAtom(selectedDeviceAtom);
+
   const routes = [
     {
       name: "Home",
@@ -105,6 +106,24 @@ const Sidebar = forwardRef((props, ref) => {
           name: "POM02",
           action: () => {
             setSelectedDevice(options[1]);
+          },
+        },
+        {
+          name: "POM05",
+          action: () => {
+            setSelectedDevice(options[2]);
+          },
+        },
+        {
+          name: "POM05",
+          action: () => {
+            setSelectedDevice(options[3]);
+          },
+        },
+        {
+          name: "POM05",
+          action: () => {
+            setSelectedDevice(options[4]);
           },
         },
       ],

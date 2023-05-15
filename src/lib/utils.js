@@ -34,6 +34,8 @@ export const getStatuses = async () => {
       {
         power1: "DB23,R2172",
         power2: "DB23,R2688",
+        grid: "I2.1",
+        gen: "I2.2",
       },
       false,
       false,
@@ -46,6 +48,8 @@ export const getStatuses = async () => {
   return {
     isOnline: readerData.values ? true : false,
     onlineDevices: Math.round(readerData.values.power1 + readerData.values.power2) > 0 ? 5 : 0,
-    power: Math.round(readerData.values.power1 + readerData.values.power2),
+    power: Number.parseFloat(readerData.values.power1 + readerData.values.power2).toFixed(3),
+    gen: readerData.values.gen,
+    grid: readerData.values.grid,
   }
 }
