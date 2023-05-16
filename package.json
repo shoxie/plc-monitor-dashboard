@@ -31,6 +31,7 @@
     "mac-scrollbar": "^0.10.6",
     "moment": "^2.29.4",
     "next": "13.2.4",
+    "next-useragent": "^2.8.0",
     "nextjs-cors": "^2.1.2",
     "react": "18.2.0",
     "react-chartjs-2": "^5.2.0",

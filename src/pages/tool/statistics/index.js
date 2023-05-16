@@ -7,6 +7,8 @@ import { Box, Text } from "@chakra-ui/react";
 import { getData } from '@/lib/api';
 import { Capacitor } from "@capacitor/core";
 import Layout from "@/layouts/SignedIn";
+import { useAtom } from "jotai";
+import { isModileAtom } from "@/lib/atoms";
 
 const columnHelper = createColumnHelper();
 
@@ -63,7 +65,7 @@ const Statistics = ({ url }) => {
     to: undefined
   })
 
-  const isMobile = Capacitor.getPlatform() !== "web";
+  const [isMobile] = useAtom(isModileAtom)
 
   useEffect(() => {
     console.log('sortCondition', sortCondition)

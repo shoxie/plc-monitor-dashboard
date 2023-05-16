@@ -109,13 +109,13 @@ const Sidebar = forwardRef((props, ref) => {
           },
         },
         {
-          name: "POM05",
+          name: "POM03",
           action: () => {
             setSelectedDevice(options[2]);
           },
         },
         {
-          name: "POM05",
+          name: "POM04",
           action: () => {
             setSelectedDevice(options[3]);
           },

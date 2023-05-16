@@ -28,6 +28,8 @@ import { CapacitorHttp } from "@capacitor/core";
 import { getData, reader } from "@/lib/api";
 import useDeviceDetect from "./../lib/useDevicDetect";
 import { getServerConfig } from "@/lib/utils";
+import { useAtom } from "jotai";
+import { isModileAtom } from "@/lib/atoms";
 
 ChartJS.register(
   CategoryScale,
@@ -113,7 +115,7 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
 
   const [test, settest] = React.useState(null);
 
-  const isMobile = Capacitor.getPlatform() !== "web";
+  const  [isMobile] = useAtom(isModileAtom)
 
   useEffect(() => {
     const interval = setInterval(async () => {

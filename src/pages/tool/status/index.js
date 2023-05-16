@@ -4,8 +4,11 @@ import { getStatuses } from "@/lib/utils";
 import axios from "axios";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
+import { useUserAgent } from 'next-useragent'
+import { isModileAtom } from "@/lib/atoms";
+import { useAtom } from "jotai";
 
-const Status = () => {
+const Status = (props) => {
     const [status, setStatus] = useState({
         isOnline: false,
         onlineDevices: 0,
@@ -15,6 +18,7 @@ const Status = () => {
     })
     const [isError, setIsError] = useState(false)
     const [notis, setNotis] = useState([])
+    const [, setIsMobile] = useAtom(isModileAtom)
 
     useEffect(() => {
         async function run() {
@@ -30,11 +34,19 @@ const Status = () => {
         async function getNoti() {
             axios.get("/api/getNoti").then(res => setNotis(res.data))
         }
+
         setInterval(() => {
             if (!isError) run()
         }, 1000)
 
         getNoti()
+
+        if (props.uaString) {
+            setIsMobile(useUserAgent(props.uaString))
+          } else {
+            setIsMobile(useUserAgent(window.navigator.userAgent))
+          }
+        
 
         return () => {
             clearInterval(run)
@@ -97,3 +109,11 @@ const Status = () => {
 
 Status.Layout = Layout
 export default Status
+
+export function getServerSideProps(context) {
+    return {
+      props: {
+        uaString: context.req.headers['user-agent']
+      }
+    }
+  }
