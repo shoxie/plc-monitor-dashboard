@@ -42,9 +42,9 @@ const Status = (props) => {
         getNoti()
 
         if (props.uaString) {
-            setIsMobile(useUserAgent(props.uaString))
+            setIsMobile(useUserAgent(props.uaString).isMobile)
           } else {
-            setIsMobile(useUserAgent(window.navigator.userAgent))
+            setIsMobile(useUserAgent(window.navigator.userAgent).isMobile)
           }
         
 

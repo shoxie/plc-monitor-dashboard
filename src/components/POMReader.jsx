@@ -115,7 +115,7 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
 
   const [test, settest] = React.useState(null);
 
-  const  [isMobile] = useAtom(isModileAtom)
+  const [isMobile] = useAtom(isModileAtom)
 
   useEffect(() => {
     const interval = setInterval(async () => {
