@@ -93,35 +93,35 @@ const Sidebar = forwardRef((props, ref) => {
     },
     {
       name: "Monitor",
-      href: "/tool/monitor",
+      href: "/tool/overview",
       icon: FiMonitor,
       children: [
         {
-          name: "POM01",
+          name: "GRID",
           action: () => {
             setSelectedDevice(options[0]);
           },
         },
         {
-          name: "POM02",
+          name: "GRID + SOLA",
           action: () => {
             setSelectedDevice(options[1]);
           },
         },
         {
-          name: "POM03",
+          name: "GEN",
           action: () => {
             setSelectedDevice(options[2]);
           },
         },
         {
-          name: "POM04",
+          name: "LOAD 1",
           action: () => {
             setSelectedDevice(options[3]);
           },
         },
         {
-          name: "POM05",
+          name: "LOAD 2",
           action: () => {
             setSelectedDevice(options[4]);
           },

@@ -162,7 +162,7 @@ function PerDayModal({ day }) {
     function transformToChartJSFormat(data) {
       const labels = data.map((item) => item.hour.toString());
       const powers = data.map((item) => item.power);
-    
+
       return {
         labels: labels,
         datasets: [
@@ -181,23 +181,25 @@ function PerDayModal({ day }) {
     day.data.forEach((obj) => {
       const createdDate = new Date(obj.created_at);
       const hour = createdDate.getHours();
-
+    
       const existingHourlySum = hourlySum.find((x) => x.hour === hour);
-
+    
       if (existingHourlySum) {
         existingHourlySum.power += obj.power1 + obj.power2;
+        existingHourlySum.occurrences += 1;
       } else {
-        if (obj.power1 === 0 && obj.power2 === 0) {
-          hourlySum.push({
-            hour,
-            power: 0,
-          });
-        } else {
-          hourlySum.push({
-            hour,
-            power: obj.power1 + obj.power2,
-          });
-        }
+        const occurrences = obj.power1 === 0 && obj.power2 === 0 ? 0 : 1;
+        hourlySum.push({
+          hour,
+          power: obj.power1 + obj.power2,
+          occurrences: occurrences,
+        });
+      }
+    });
+    
+    hourlySum.forEach((sum) => {
+      if (sum.occurrences > 1) {
+        sum.power = sum.power / sum.occurrences;
       }
     });
     const data = fillMissingHours(hourlySum);
@@ -218,6 +220,10 @@ function PerDayModal({ day }) {
     })
 
   }, [day]);
+
+  const currentDate = new Date();
+  const isSameMonth = currentDate.getMonth() === new Date(day.actualDate).getMonth();
+
   return (
     <>
       <Button onClick={onOpen} w="full" h="full" position="relative">
@@ -227,7 +233,7 @@ function PerDayModal({ day }) {
         <Text align="center" position="absolute" bottom={0} right={0}>
           {day.date}
         </Text>
-        {new Date().getDate().toString() === day.date && (
+        {new Date().getDate().toString() === day.date && isSameMonth && (
           <Box position="absolute" left={3} top={0} w="2" h="full" bg="cyan.400" />
         )}
       </Button>
@@ -280,40 +286,54 @@ function CalendarCells({ currentMonth, selectedDate, events }) {
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat);
-        const a = events.find((item) => {
-          if (new Date(item.date).getDate() === new Date(day).getDate()) {
-            return item.data;
-          } else {
-            return null;
-          }
-        });
-        if (a) {
-          const powerSum = a.data.reduce((acc, curr) => {
-            const totalPower = curr.power1 + curr.power2;
-            return acc + totalPower;
-          }, 0);
-          const hours = a.data.map((obj) => {
-            const hour = new Date(obj.created_at).getUTCHours();
-            return hour;
+        if (getMonth(day) === new Date().getMonth()) {
+          const a = events.find((item) => {
+            if (new Date(item.date).getDate() === new Date(day).getDate()) {
+              return item.data;
+            } else {
+              return null;
+            }
           });
+          if (a) {
+            const powerSum = a.data.reduce((acc, curr) => {
+              const totalPower = curr.power1 + curr.power2;
+              return acc + totalPower;
+            }, 0);
+            const hours = a.data.map((obj) => {
+              const hour = new Date(obj.created_at).getUTCHours();
+              return hour;
+            });
 
-          // Calculate the number of unique hours recorded in the array
-          const uniqueHours = new Set(hours);
-          const recordedHours = uniqueHours.size;
-          days.push({
-            date: formattedDate,
-            data: a.data,
-            powerSum: powerSum,
-            hours: recordedHours,
-            selectedDate: format(selectedDate, "dd/MM/yyyy")
-          });
+            // Calculate the number of unique hours recorded in the array
+            const uniqueHours = new Set(hours);
+            const recordedHours = uniqueHours.size;
+            days.push({
+              date: formattedDate,
+              data: a.data,
+              powerSum: powerSum,
+              hours: recordedHours,
+              selectedDate: format(selectedDate, "dd/MM/yyyy"),
+              actualDate: format(day, "yyyy-MM-dd") // Modified the format to ISO 8601
+            });
+          } else {
+            days.push({
+              date: formattedDate,
+              data: [],
+              powerSum: 0,
+              recordedHours: 0,
+              selectedDate: format(selectedDate, "dd/MM/yyyy"),
+              actualDate: format(day, "yyyy-MM-dd") // Modified the format to ISO 8601
+            });
+          }
         } else {
+          // Push an empty object for days outside the current month
           days.push({
             date: formattedDate,
             data: [],
             powerSum: 0,
             recordedHours: 0,
-            selectedDate: format(selectedDate, "dd/MM/yyyy")
+            selectedDate: format(selectedDate, "dd/MM/yyyy"),
+            actualDate: format(day, "yyyy-MM-dd") // Modified the format to ISO 8601
           });
         }
         day = addDays(day, 1);
