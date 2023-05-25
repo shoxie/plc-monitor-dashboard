@@ -76,54 +76,56 @@ export default function DataTable({
   }
 
   return (
-    <HStack justify={"start"} align="start" spacing={5}>
-      <Box>
-        <FormControl>
-          <FormLabel>From</FormLabel>
-          <Input
-            type="datetime-local"
-            onChange={(e) =>
-              setSortCondition({
-                ...sortCondition,
-                from: new Date(e.target.value),
-              })
-            }
-          />
-        </FormControl>
-        <FormControl>
-          <FormLabel>To</FormLabel>
-          <Input
-            type="datetime-local"
-            onChange={(e) =>
-              setSortCondition({
-                ...sortCondition,
-                to: new Date(e.target.value),
-              })
-            }
-          />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Select a device</FormLabel>
-          <Select
-            placeholder="Select device"
-            onChange={(e) =>
-              setSortCondition({ ...sortCondition, device: e.target.value })
-            }
-          >
-            <option value="POM01">POM01</option>
-            <option value="POM02">POM02</option>
-            <option value="POM03">POM03</option>
-            <option value="POM04">POM04</option>
-            <option value="POM05">POM05</option>
-          </Select>
-        </FormControl>
-        <Box mt={5}>
-          <CSVLink data={data} filename={`data.csv`}>
-            <Button>Download</Button>
-          </CSVLink>
+    <HStack justify={"start"} align="start" spacing={5} width="full">
+      {sortCondition && (
+        <Box>
+          <FormControl>
+            <FormLabel>From</FormLabel>
+            <Input
+              type="datetime-local"
+              onChange={(e) =>
+                setSortCondition({
+                  ...sortCondition,
+                  from: new Date(e.target.value),
+                })
+              }
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>To</FormLabel>
+            <Input
+              type="datetime-local"
+              onChange={(e) =>
+                setSortCondition({
+                  ...sortCondition,
+                  to: new Date(e.target.value),
+                })
+              }
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Select a device</FormLabel>
+            <Select
+              placeholder="Select device"
+              onChange={(e) =>
+                setSortCondition({ ...sortCondition, device: e.target.value })
+              }
+            >
+              <option value="POM01">POM01</option>
+              <option value="POM02">POM02</option>
+              <option value="POM03">POM03</option>
+              <option value="POM04">POM04</option>
+              <option value="POM05">POM05</option>
+            </Select>
+          </FormControl>
+          <Box mt={5}>
+            <CSVLink data={data} filename={`data.csv`}>
+              <Button>Download</Button>
+            </CSVLink>
+          </Box>
         </Box>
-      </Box>
-      <Box>
+      )}
+      <Box w={"full"}>
         <Table w={"full"}>
           <Thead>
             {table.getHeaderGroups().map((headerGroup) => (

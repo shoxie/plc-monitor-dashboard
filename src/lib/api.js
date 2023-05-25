@@ -39,3 +39,13 @@ export const reader = async (url, params, willSave, isAndroid, cb) => {
         return data
     }
 }
+
+export const getWeatherData = async (location) => {
+    try {
+        const weatherData = await axios.get("https://api.open-meteo.com/v1/forecast?latitude=10.82&longitude=106.63&hourly=relativehumidity_2m,rain,weathercode&models=gfs_seamless&daily=weathercode,temperature_2m_max,temperature_2m_min,rain_sum&current_weather=true&timezone=Asia%2FBangkok")
+
+        return weatherData.data
+    } catch (err) {
+        return err
+    }
+}

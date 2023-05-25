@@ -13,3 +13,4 @@ export const selectedDeviceAtom = atom({
   device: "POM01"
 },)
 export const isModileAtom = atom(false)
+export const weatherDataAtom = atom(null)

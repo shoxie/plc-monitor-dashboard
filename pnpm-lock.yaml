@@ -97,6 +97,9 @@ dependencies:
   react-table:
     specifier: ^7.8.0
     version: 7.8.0(react@18.2.0)
+  weather-icons-react:
+    specifier: ^1.2.0
+    version: 1.2.0
 
 devDependencies:
   '@capacitor/cli':
@@ -3162,6 +3165,10 @@ packages:
     resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
     dependencies:
       loose-envify: 1.4.0
+    dev: false
+
+  /weather-icons-react@1.2.0:
+    resolution: {integrity: sha512-VlLyZb9rb0Ir/NvC6T3YOcnftzUMg8hDYMb9xf1pzzM5z5wKogL6q1wZeqE5e+oHSw0CVcTFtYCbSa1ZEwnDZQ==}
     dev: false
 
   /which@2.0.2:
