@@ -99,6 +99,7 @@ const SidebarItem = ({ item }) => {
 
 const Sidebar = forwardRef((props, ref) => {
   const [selectedDevice, setSelectedDevice] = useAtom(selectedDeviceAtom);
+  const router = useRouter()
 
   const routes = [
     {
@@ -114,31 +115,41 @@ const Sidebar = forwardRef((props, ref) => {
         {
           name: "GRID",
           action: () => {
-            setSelectedDevice(options[0]);
+            if (router.pathname !== "/tool/monitor")
+{            router.push("/tool/monitor")
+            setSelectedDevice(options[0]);}
           },
         },
         {
           name: "GRID + SOLA",
           action: () => {
-            setSelectedDevice(options[1]);
+            if (router.pathname !== "/tool/monitor")
+{            router.push("/tool/monitor")
+            setSelectedDevice(options[1]);}
           },
         },
         {
           name: "GEN",
           action: () => {
-            setSelectedDevice(options[2]);
+            if (router.pathname !== "/tool/monitor")
+{            router.push("/tool/monitor")
+            setSelectedDevice(options[2]);}
           },
         },
         {
           name: "LOAD 1",
           action: () => {
-            setSelectedDevice(options[3]);
+            if (router.pathname !== "/tool/monitor")
+{            router.push("/tool/monitor")
+            setSelectedDevice(options[3]);}
           },
         },
         {
           name: "LOAD 2",
           action: () => {
-            setSelectedDevice(options[4]);
+            if (router.pathname !== "/tool/monitor")
+{            router.push("/tool/monitor")
+            setSelectedDevice(options[4]);}
           },
         },
       ],

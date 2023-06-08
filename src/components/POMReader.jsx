@@ -80,7 +80,7 @@ export const data = {
   ],
 };
 
-export const POMReader = ({ addresses, url, onUrlError }) => {
+export const POMReader = ({ addresses, url, toggleUrl, onUrlError }) => {
   const [voltageData, setVoltageData] = React.useState(null);
   const [freqData, setFreqData] = React.useState(null);
   const [ampereData, setAmpereData] = React.useState(null);
@@ -116,6 +116,11 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
   const [test, settest] = React.useState(null);
 
   const [isMobile] = useAtom(isModileAtom)
+
+  async function handleClick() {
+    // axios.get(`${config.url}${toggleUrl}`).then(result => console.log(result))
+    axios.get(`/api/serverRequest?url=${config.url}${toggleUrl}`).then(res => console.log("res" ,res))
+  }
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -274,7 +279,7 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
       freqChartRef.current.update();
       voltageChartRef.current.update();
       powerChartRef.current.update();
-    }, 2000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
@@ -350,14 +355,14 @@ export const POMReader = ({ addresses, url, onUrlError }) => {
       <div className="mt-20">
         <h2 className="font-bold text-xl">Controls</h2>
         <HStack>
-          <Button
+          <Button onClick={handleClick}
             disabled={
               controlStates === "interrupt" || controlStates === "tripped"
             }
           >
             On
           </Button>
-          <Button disabled={controlStates === "closed"}>Off</Button>
+          <Button onClick={handleClick} disabled={controlStates === "closed"}>Off</Button>
         </HStack>
       </div>
       <div>{JSON.stringify(test)}</div>

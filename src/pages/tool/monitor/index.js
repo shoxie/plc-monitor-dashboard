@@ -46,7 +46,7 @@ const Monitor = () => {
           <option value='4'>POM5</option>
         </Select>
       </FormControl> */}
-      <POMReader addresses={selectedDevice} key={selectedDevice.device} url={url} onUrlError={onUrlError} />
+      <POMReader addresses={selectedDevice.addresses} key={selectedDevice.addresses.device} toggleUrl={selectedDevice.toggleUrl} url={url} onUrlError={onUrlError} />
     </Box>
   )
 }
