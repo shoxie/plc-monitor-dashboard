@@ -1,14 +1,17 @@
 import { Box, Button, FormControl, FormLabel, Input, Select } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { POMReader } from "@/components/POMReader";
 import { useAtom } from "jotai";
 import { selectedDeviceAtom, urlAtom } from "@/lib/atoms";
 import Layout from "@/layouts/SignedIn";
+import { useRouter } from "next/router";
 
 const Monitor = () => {
   const [selectedDevice, setSelectedDevice] = useAtom(selectedDeviceAtom)
   const [url, setUrl] = useAtom(urlAtom)
   const [key, setKey] = useState(0)
+  const [loaded, setLoaded] = useState(false)
+  const router = useRouter();
 
   function onSubmit(e) {
     e.preventDefault()
@@ -20,33 +23,18 @@ const Monitor = () => {
     setUrl("")
   }
 
-  // if (!url) {
-  //   return (
-  //     <Box>
-  //       <form onSubmit={onSubmit}>
-  //         <FormControl>
-  //           <FormLabel>Set endpoint server</FormLabel>
-  //           <Input id="url" />
-  //           <Button type="submit">Go</Button>
-  //         </FormControl>
-  //       </form>
-  //     </Box>
-  //   )
-  // }
+  useEffect(() => {
+    const deviceParams = router.query.device;
+    const device = parseInt(deviceParams);
+    if (!isNaN(device) && device >= 0 && device <= 4) {
+      setSelectedDevice(device);
+      setLoaded(true);
+    }
+  }, [router.query.device])
 
   return (
     <Box py={5}>
-      {/* <FormControl>
-        <FormLabel>Select a device</FormLabel>
-        <Select placeholder='Select device' onChange={e => setSelectedDevice(options[parseInt(e.target.value)])}>
-          <option value='0'>POM1</option>
-          <option value='1'>POM2</option>
-          <option value='2'>POM3</option>
-          <option value='3'>POM4</option>
-          <option value='4'>POM5</option>
-        </Select>
-      </FormControl> */}
-      <POMReader addresses={selectedDevice.addresses} key={selectedDevice.addresses.device} toggleUrl={selectedDevice.toggleUrl} url={url} onUrlError={onUrlError} />
+      { loaded && <POMReader addresses={selectedDevice.addresses} key={selectedDevice.addresses.device} toggleUrl={selectedDevice.toggleUrl} url={url} onUrlError={onUrlError} />}
     </Box>
   )
 }

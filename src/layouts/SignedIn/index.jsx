@@ -99,7 +99,7 @@ const SidebarItem = ({ item }) => {
 
 const Sidebar = forwardRef((props, ref) => {
   const [selectedDevice, setSelectedDevice] = useAtom(selectedDeviceAtom);
-  const router = useRouter()
+  const router = useRouter();
 
   const routes = [
     {
@@ -115,41 +115,46 @@ const Sidebar = forwardRef((props, ref) => {
         {
           name: "GRID",
           action: () => {
-            if (router.pathname !== "/tool/monitor")
-{            router.push("/tool/monitor")
-            setSelectedDevice(options[0]);}
+            if (router.pathname !== "/tool/monitor") {
+              router.push("/tool/monitor?device=0");
+              setSelectedDevice(options[0]);
+            }
           },
         },
         {
           name: "GRID + SOLA",
           action: () => {
-            if (router.pathname !== "/tool/monitor")
-{            router.push("/tool/monitor")
-            setSelectedDevice(options[1]);}
+            if (router.pathname !== "/tool/monitor?device=1") {
+              router.push("/tool/monitor");
+              setSelectedDevice(options[1]);
+            }
           },
         },
         {
           name: "GEN",
           action: () => {
-            if (router.pathname !== "/tool/monitor")
-{            router.push("/tool/monitor")
-            setSelectedDevice(options[2]);}
+            if (router.pathname !== "/tool/monitor?device=2") {
+              router.push("/tool/monitor");
+              setSelectedDevice(options[2]);
+            }
           },
         },
         {
           name: "LOAD 1",
           action: () => {
-            if (router.pathname !== "/tool/monitor")
-{            router.push("/tool/monitor")
-            setSelectedDevice(options[3]);}
+            if (router.pathname !== "/tool/monitor?device=3") {
+              router.push("/tool/monitor");
+              setSelectedDevice(options[3]);
+            }
           },
         },
         {
           name: "LOAD 2",
           action: () => {
-            if (router.pathname !== "/tool/monitor")
-{            router.push("/tool/monitor")
-            setSelectedDevice(options[4]);}
+            if (router.pathname !== "/tool/monitor?device=4") {
+              router.push("/tool/monitor");
+              setSelectedDevice(options[4]);
+            }
           },
         },
       ],
@@ -220,7 +225,7 @@ const Header = (props) => {
   useEffect(() => {
     async function run() {
       const data = await getWeatherData();
-      console.log('data', data)
+      console.log("data", data);
       setWeatherData(data);
     }
 
@@ -294,39 +299,39 @@ const Header = (props) => {
 
     switch (code) {
       case 0:
-        icon = "Trời quang"
+        icon = "Trời quang";
         break;
       case 1:
       case 2:
       case 3:
-        icon = "Trời quang, nhiều mây"
+        icon = "Trời quang, nhiều mây";
         break;
       case 45:
       case 48:
-        icon = "Có sương mù"
+        icon = "Có sương mù";
         break;
       case 51:
       case 53:
       case 55:
-        icon = "Mưa nhỏ"
+        icon = "Mưa nhỏ";
         break;
       case 56:
       case 57:
-        icon = "Nhiều mây, lạnh"
+        icon = "Nhiều mây, lạnh";
         break;
       case 61:
       case 63:
       case 65:
-        icon = "Mưa vừa"
+        icon = "Mưa vừa";
         break;
       case 66:
       case 67:
-        icon = "Mưa lớn"
+        icon = "Mưa lớn";
         break;
       case 80:
       case 81:
       case 82:
-        icon = "Mưa nặng hạt"
+        icon = "Mưa nặng hạt";
         break;
       case 95:
       case 99:
@@ -337,8 +342,8 @@ const Header = (props) => {
         icon = <WiDaySunny {...config} />;
         break;
     }
-    const humid = weatherData?.hourly?.relativehumidity_2m?.[0] ?? 0
-    return icon + " Độ ẩm " + humid +"%"
+    const humid = weatherData?.hourly?.relativehumidity_2m?.[0] ?? 0;
+    return icon + " Độ ẩm " + humid + "%";
   }
 
   return (
@@ -365,8 +370,16 @@ const Header = (props) => {
           <Text>{user?.name || "Anonymous"}</Text>
         </HStack>
         <HStack>
-          <Box>{getWeatherIconByCode(weatherData?.current_weather?.weatherCode ?? 0)}</Box>
-          <Text color="black">{getWeatherTextByCode(weatherData?.current_weather?.weatherCode ?? 0)}</Text>
+          <Box>
+            {getWeatherIconByCode(
+              weatherData?.current_weather?.weatherCode ?? 0
+            )}
+          </Box>
+          <Text color="black">
+            {getWeatherTextByCode(
+              weatherData?.current_weather?.weatherCode ?? 0
+            )}
+          </Text>
         </HStack>
       </HStack>
     </>
