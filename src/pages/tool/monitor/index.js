@@ -5,6 +5,7 @@ import { useAtom } from "jotai";
 import { selectedDeviceAtom, urlAtom } from "@/lib/atoms";
 import Layout from "@/layouts/SignedIn";
 import { useRouter } from "next/router";
+import { options } from "@/lib/constants";
 
 const Monitor = () => {
   const [selectedDevice, setSelectedDevice] = useAtom(selectedDeviceAtom)
@@ -26,15 +27,18 @@ const Monitor = () => {
   useEffect(() => {
     const deviceParams = router.query.device;
     const device = parseInt(deviceParams);
+    console.log("device", device)
     if (!isNaN(device) && device >= 0 && device <= 4) {
-      setSelectedDevice(device);
+      setSelectedDevice(options[device]);
       setLoaded(true);
     }
   }, [router.query.device])
 
+  // useEffect(() => {}, [selectedDevice])
+
   return (
     <Box py={5}>
-      { loaded && <POMReader addresses={selectedDevice.addresses} key={selectedDevice.addresses.device} toggleUrl={selectedDevice.toggleUrl} url={url} onUrlError={onUrlError} />}
+      {loaded && <POMReader addresses={selectedDevice.addresses} key={selectedDevice?.addresses.device} toggleUrl={selectedDevice.toggleUrl} url={url} onUrlError={onUrlError} />}
     </Box>
   )
 }
